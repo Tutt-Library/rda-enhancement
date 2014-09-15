@@ -10,7 +10,7 @@
 # Copyright:   (c) Jeremy Nelson, Colorado College 2014
 # Licence:     MIT
 #-------------------------------------------------------------------------------
-import BaseMARC21Conversion
+from base_converter import BaseMARC21Conversion
 import os
 import pymarc
 import re
@@ -33,13 +33,14 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
         for field245 in all245s:
             self.remove245EllipsesChangeLatin(field245)
             self.remove245GMD(field245)
-            self.__format245__(field245)
+            new_field245 = self.__format245__(field245)
+            self.record.remove_field(field245)
+            self.record.add_field(new_field245)
+
 
     def convert300(self):
         preface_pages_re = re.compile(r"(\w+), (\w+) p+")
         illus_re = re.compile(r"illus|ill.")
-
-
 
 
     def remove245EllipsesChangeLatin(self, field245):
@@ -56,7 +57,14 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
 
     def remove245GMD(self, field245):
         """Method removes the General Material Designator (GMD) -- 245
-        subfield h  (for example:  $h [electronic resource])"""
+        subfield h  (for example:  $h [electronic resource]) This conversion
+        will also be accomplished in the general forma245 of the parent class
+
+        Args:
+            field245(pymarc.Field): A 245 field
+
+        """
+
         field245.delete_subfield('h')
 
 
