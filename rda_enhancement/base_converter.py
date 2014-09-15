@@ -54,10 +54,10 @@ class BaseMARC21Conversion(object):
 
         if len(c_subfields) > 0 and len(b_subfields) < 1:
             if 'a' in new245.subfields:
-                new245['a'] = '{0} /'.format(new245['a'].strip())
+                new245['a'] = u'{0} /'.format(new245['a'].strip())
         elif len(b_subfields) > 0:
             if 'a' in new245.subfields:
-                new245['a'] = '{0} :'.format(new245['a'].strip())
+                new245['a'] = u'{0} :'.format(new245['a'].strip())
         if len(b_subfields) > 0:
             for subfield_b in b_subfields:
                 new245.add_subfield('b',subfield_b)
