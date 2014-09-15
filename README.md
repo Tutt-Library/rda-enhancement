@@ -1,6 +1,6 @@
 # Tutt Library RDA Enhancement Python Library
 
-[![Build Status](https://travis-ci.org/Tutt-Library/rda-enhancement.svg)(https://travis-ci.org/Tutt-Library/rda-enhancement)
+[![Build Status](https://travis-ci.org/Tutt-Library/rda-enhancement.svg)](https://travis-ci.org/Tutt-Library/rda-enhancement)
 
 ## Installing
 This module can be installed by first downloading (or cloning) the
