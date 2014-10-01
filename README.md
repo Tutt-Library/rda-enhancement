@@ -1,4 +1,4 @@
-# Tutt Library RDA Enhancement Python Library
+# Tutt Library RDA Enhancement Library
 
 [![Build Status](https://travis-ci.org/Tutt-Library/rda-enhancement.svg)](https://travis-ci.org/Tutt-Library/rda-enhancement)
 
@@ -19,4 +19,4 @@ repository and then running:
 Run all of the unit tests for this module:
 
     cd rda_enhancements/
-    python tests.py
+    python tests.pyu
