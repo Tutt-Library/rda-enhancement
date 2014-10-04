@@ -4,7 +4,7 @@
 #              February 25, 2013 recommendations for converting MARC21 records
 #              to hybrid RDA records.
 #
-# Author:      Jeremy Nelson
+# Author:      Jeremy Nelson, Anjali Ravunniarath
 #
 # Created:     2014/15/09
 # Copyright:   (c) Jeremy Nelson, Colorado College 2014
@@ -39,8 +39,27 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
 
 
     def convert300(self):
+        all300s = self.record.get_fields('300')
+
         preface_pages_re = re.compile(r"(\w+), (\w+) p+")
+        pages_re = re.compile(r"p.")
+        volumes_re = re.compile(r"v.")
         illus_re = re.compile(r"illus|ill.")
+        facsim_re = re.compile(r"facsims.")
+        sound_re = re.compile(r"sd.")
+        approx_re = re.compile(r"ca.")
+        
+        for field_a in all300s:
+            all_a_subfields = field_a.get_subfields('a')
+            for subfield_a in all_a_subfields:
+                new_a = pages_re.sub("pages", subfield_a)
+                new_a = volumes_re.sub("volumes", new_a)
+                new_a = illus_re.sub("illustrations", new_a)
+                new_a = illus_re.sub("facsimiles", new_a)
+                new_a = sound_re.sub("sound", new_a)
+                new_a = approx_re.sub("approximately", new_a)
+                field_a.delete_subfield('a')
+                field_a.add_subfield('a', new_a)
 
 
     def remove245EllipsesChangeLatin(self, field245):

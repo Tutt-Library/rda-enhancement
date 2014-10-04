@@ -73,6 +73,14 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
 
     def test_convert300(self):
         pass
+
+    def test_convert300_a1(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('300', ['', ''], ['a', '104 p. :']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert300()
+        self.assertEqual(str(record['300']['a']), "104 pages :")
         
     
     def tearDown(self):
