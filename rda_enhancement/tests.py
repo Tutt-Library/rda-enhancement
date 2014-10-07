@@ -73,6 +73,46 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
 
     def test_convert300(self):
         pass
+
+    def test_convert300_a1(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('300', ['', ''], ['a', '104 p. :']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert300()
+        self.assertEqual(str(record['300']['a']), "104 pages :")
+
+    def test_convert300_a2(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('300', ['', ''], ['a', '11 v. :']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert300()
+        self.assertEqual(str(record['300']['a']), "11 volumes :")
+
+    def test_convert300_a3(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('300', ['', ''], ['a', '74 p. of ill., 15 p. :']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert300()
+        self.assertEqual(str(record['300']['a']), "74 pages of illustrations, 15 pages :")
+
+    def test_convert300_b1(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('300', ['',''], ['b', 'sd., col. ;']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert300()
+        self.assertEqual(str(record['300']['b']), "sound, col. ;")
+
+    def test_convert300_b2(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('300', ['',''], ['b', 'ill., sd., ca., facsims. ;']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert300()
+        self.assertEqual(str(record['300']['b']), "illustrations, sound, approximately, facsimiles ;")
         
     
     def tearDown(self):
