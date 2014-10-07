@@ -55,11 +55,24 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
                 new_a = pages_re.sub("pages", subfield_a)
                 new_a = volumes_re.sub("volumes", new_a)
                 new_a = illus_re.sub("illustrations", new_a)
-                new_a = illus_re.sub("facsimiles", new_a)
+                new_a = facsim_re.sub("facsimiles", new_a)
                 new_a = sound_re.sub("sound", new_a)
                 new_a = approx_re.sub("approximately", new_a)
                 field_a.delete_subfield('a')
                 field_a.add_subfield('a', new_a)
+        
+        for field_b in all300s:
+            all_b_subfields = field_b.get_subfields('b')
+            for subfield_b in all_b_subfields:
+                new_b = pages_re.sub("pages", subfield_b)
+                new_b = volumes_re.sub("volumes", new_b)
+                new_b = illus_re.sub("illustrations", new_b)
+                new_b = facsim_re.sub("facsimiles", new_b)
+                new_b = sound_re.sub("sound", new_b)
+                new_b = approx_re.sub("approximately", new_b)
+                field_b.delete_subfield('b')
+                field_b.add_subfield('b', new_b)
+
 
 
     def remove245EllipsesChangeLatin(self, field245):
