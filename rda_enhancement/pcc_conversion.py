@@ -11,13 +11,17 @@
 # Licence:     MIT
 #-------------------------------------------------------------------------------
 from base_converter import BaseMARC21Conversion
-import os
+
 import pymarc
 import re
-import sys
 
 
 class PCCMARCtoRDAConversion(BaseMARC21Conversion):
+    """Placeholder for class summary
+
+    Attributes:
+        record: pymarc.Record
+    """
 
     def __init__(self, marc_record):
         super(PCCMARCtoRDAConversion, self).__init__()
@@ -48,7 +52,7 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
         facsim_re = re.compile(r"facsims.")
         sound_re = re.compile(r"sd.")
         approx_re = re.compile(r"ca.")
-        
+
         for field_a in all300s:
             all_a_subfields = field_a.get_subfields('a')
             for subfield_a in all_a_subfields:
@@ -60,7 +64,7 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
                 new_a = approx_re.sub("approximately", new_a)
                 field_a.delete_subfield('a')
                 field_a.add_subfield('a', new_a)
-        
+
         for field_b in all300s:
             all_b_subfields = field_b.get_subfields('b')
             for subfield_b in all_b_subfields:
@@ -78,7 +82,7 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
     def remove245EllipsesChangeLatin(self, field245):
         """Method 245 subfield c:  Remove ellipses and change Latin abbreviation
         ("... [et al.]"  becomes "[and others]")"""
-        pattern = re.compile("\u2026 \[et al.\]")
+        pattern = re.compile(r"\u2026 \[et al.\]")
         c_subfields = field245.get_subfields('c')
         for subfield in c_subfields:
             if pattern.search(subfield):
