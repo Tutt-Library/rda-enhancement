@@ -41,6 +41,21 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
             self.record.remove_field(field245)
             self.record.add_field(new_field245)
 
+    def convert260(self):
+        all260s = self.record.get_fields('260')
+
+        s1_re = re.compile(r"S.1.")
+        sn_re = re.compile(r"s.n.")
+
+        for all_fields in all260s:
+            for all_subfields in all_fields:
+                subfields = all_fields.get_subfields('all_subfields')
+                for subfield in subfields:
+                    new_field = s1_re.sub("Place of publication not identified", subfield)
+                    new_field = sn_re.sub("publisher not identified", new_field)
+                    all_fields.delete_subfield('all_subfields')
+                    all_fields.add_subfield('all_subfields', new_field)
+
 
     def convert300(self):
         all300s = self.record.get_fields('300')

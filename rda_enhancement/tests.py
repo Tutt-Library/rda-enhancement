@@ -71,6 +71,15 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
             "=245  10$aASP.NET Web API 2 Recipes :$bA Problem Solution Approach /$cby Filip Wojcieszyn.",
             str(self.record_1['245']))
 
+    def test_convert260(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('260', ['',''], ['a', '[S.l. :'], ['b', 's.n.,']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert260()
+        self.assertEqual(str(record['260']['a']), "[Place of publication not identified :")
+
+
     def test_convert300(self):
         pass
 
