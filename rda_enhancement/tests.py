@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+"""#----------------------------------------------------------------------------
 # Name:        tests
 # Purpose:     Unit tests for RDA Enhancement Project
 #
@@ -7,7 +7,7 @@
 # Created:     2014/09/15/
 # Copyright:   (c) Jeremy Nelson, Colorado College 2014
 # Licence:     MIT
-#-------------------------------------------------------------------------------
+#----------------------------------------------------------------------------"""
 __author__ = "Jeremy Nelson, Anjali Ravunniarath"
 
 import copy
@@ -77,7 +77,8 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
             pymarc.Field('260', ['',''], ['a', '[S.l. :'], ['b', 's.n.,']))
         converter = PCCMARCtoRDAConversion(record)
         converter.convert260()
-        self.assertEqual(str(record['260']['a']), "[Place of publication not identified :")
+        self.assertEqual(str(converter.record['260']['a']),
+            "[Place of publication not identified :")
 
 
     def test_convert300(self):
@@ -122,8 +123,8 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
         converter = PCCMARCtoRDAConversion(record)
         converter.convert300()
         self.assertEqual(str(record['300']['b']), "illustrations, sound, approximately, facsimiles ;")
-        
-    
+
+
     def tearDown(self):
         pass
 
