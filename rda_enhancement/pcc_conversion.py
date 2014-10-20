@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+"""-------------------------------------------------------------------------------
 # Name:        pcc_conversion
 # Purpose:     Implements Program for Cooperative Cataloging's conversion
 #              February 25, 2013 recommendations for converting MARC21 records
@@ -9,7 +9,7 @@
 # Created:     2014/15/09
 # Copyright:   (c) Jeremy Nelson, Colorado College 2014
 # Licence:     MIT
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------"""
 from base_converter import BaseMARC21Conversion
 
 import pymarc
@@ -22,6 +22,13 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
     Attributes:
         record: pymarc.Record
     """
+
+    pages_re = re.compile(r"p.")
+    volumes_re = re.compile(r"v.")
+    illus_re = re.compile(r"illus|ill.")
+    facsim_re = re.compile(r"facsims.")
+    sound_re = re.compile(r"sd.")
+    approx_re = re.compile(r"ca.")
 
     def __init__(self, marc_record):
         super(PCCMARCtoRDAConversion, self).__init__()
@@ -61,12 +68,6 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
         """Method converts abbreviations in field 300 to the expanded form"""
         all300s = self.record.get_fields('300')
 
-        pages_re = re.compile(r"p.")
-        volumes_re = re.compile(r"v.")
-        illus_re = re.compile(r"illus|ill.")
-        facsim_re = re.compile(r"facsims.")
-        sound_re = re.compile(r"sd.")
-        approx_re = re.compile(r"ca.")
 
         for field_a in all300s:
             all_a_subfields = field_a.get_subfields('a')
@@ -117,6 +118,18 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
         """
 
         field245.delete_subfield('h')
+
+    def convert500(self):
+        """Method to convert field 500 - expanding abbreviations"""
+        all500s = self.record.get_fields('500', '501')
+        """put commas and add all the 500 fields"""
+
+        page_re = re.compile(r"p.")
+        intro_re = re.compile(r"introd.")
+
+        
+
+
 
 
 
