@@ -28,11 +28,13 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
         self.record = marc_record
 
     def convert(self):
-        "Method runs entire PCC recomended RDA conversions on its MARC21 record"
+        """Method runs entire PCC recomended
+         RDA conversions on its MARC21 record"""
         self.convert245()
 
 
     def convert245(self):
+        """Method converts field 245"""
         all245s = self.record.get_fields('245')
         for field245 in all245s:
             self.remove245EllipsesChangeLatin(field245)
@@ -42,25 +44,23 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
             self.record.add_field(new_field245)
 
     def convert260(self):
+        """Method converts field 260. Changes s.1 to
+        place of publication not identified"""
         all260s = self.record.get_fields('260')
 
         s1_re = re.compile(r"S.1.")
         sn_re = re.compile(r"s.n.")
 
-        for all_fields in all260s:
-            for all_subfields in all_fields:
-                subfields = all_fields.get_subfields('all_subfields')
-                for subfield in subfields:
-                    new_field = s1_re.sub("Place of publication not identified", subfield)
-                    new_field = sn_re.sub("publisher not identified", new_field)
-                    all_fields.delete_subfield('all_subfields')
-                    all_fields.add_subfield('all_subfields', new_field)
-
+        for field in all260s:
+            for subfield in field:
+                new_subfield = (subfield[0], s1_re.sub("[Place of publication not identified :", subfield[1]))
+                field.delete_subfield(subfield[0])
+                field.add_subfield(new_subfield[0], new_subfield[1])
 
     def convert300(self):
+        """Method converts abbreviations in field 300 to the expanded form"""
         all300s = self.record.get_fields('300')
 
-        preface_pages_re = re.compile(r"(\w+), (\w+) p+")
         pages_re = re.compile(r"p.")
         volumes_re = re.compile(r"v.")
         illus_re = re.compile(r"illus|ill.")
