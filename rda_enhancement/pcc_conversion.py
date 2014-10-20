@@ -10,13 +10,13 @@
 # Copyright:   (c) Jeremy Nelson, Colorado College 2014
 # Licence:     MIT
 #-------------------------------------------------------------------------------
-from base_converter import BaseMARC21Conversion
+import base_converter
 
 import pymarc
 import re
 
 
-class PCCMARCtoRDAConversion(BaseMARC21Conversion):
+class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
     """Placeholder for class summary
 
     Attributes:
@@ -48,12 +48,16 @@ class PCCMARCtoRDAConversion(BaseMARC21Conversion):
         place of publication not identified"""
         all260s = self.record.get_fields('260')
 
-        s1_re = re.compile(r"S.1.")
+        s1_re = re.compile(r"S.l.")
         sn_re = re.compile(r"s.n.")
 
         for field in all260s:
             for subfield in field:
-                new_subfield = (subfield[0], s1_re.sub("[Place of publication not identified :", subfield[1]))
+                new_subfield = (
+                    subfield[0],
+                    s1_re.sub(
+                        "Place of publication not identified",
+                        subfield[1]))
                 field.delete_subfield(subfield[0])
                 field.add_subfield(new_subfield[0], new_subfield[1])
 
