@@ -74,11 +74,20 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
     def test_convert260(self):
         record = pymarc.Record()
         record.add_field(
-            pymarc.Field('260', ['',''], ['a', '[S.l. :'], ['b', 's.n.,']))
+            pymarc.Field('260', ['',''], ['a', '[S.l. :']))
         converter = PCCMARCtoRDAConversion(record)
         converter.convert260()
         self.assertEqual(str(converter.record['260']['a']),
             "[Place of publication not identified :")
+
+    def test_convert260_b(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('260', ['', ''], ['b', 's.n.,']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert260()
+        self.assertEqual(str(converter.record['260']['b']),
+            "publisher not identified," )
 
 
     def test_convert300(self):
@@ -123,6 +132,14 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
         converter = PCCMARCtoRDAConversion(record)
         converter.convert300()
         self.assertEqual(str(record['300']['b']), "illustrations, sound, approximately, facsimiles ;")
+
+    def test_convert500(self):
+        record = pymarc.Record()
+        record.add_field(
+            pymarc.Field('504', ['', ''], ['a', 'Discography: p. 105-111.']))
+        converter = PCCMARCtoRDAConversion(record)
+        converter.convert500s()
+        self.assertEqual(str(record['504']['a']), "Discography: pages 105-111.")
 
 
     def tearDown(self):

@@ -24,12 +24,12 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
         record: pymarc.Record
     """
 
-    pages_re = re.compile(r"p.")
-    volumes_re = re.compile(r"v.")
-    illus_re = re.compile(r"illus|ill.")
+    pages_re = re.compile(r"p\.")
+    volumes_re = re.compile(r"v\.")
+    illus_re = re.compile(r"illus|ill\.")
     facsim_re = re.compile(r"facsims.")
     sound_re = re.compile(r"sd.")
-    approx_re = re.compile(r"ca.")
+    approx_re = re.compile(r"ca\.")
 
     def __init__(self, marc_record):
         super(PCCMARCtoRDAConversion, self).__init__()
@@ -56,19 +56,30 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
         place of publication not identified"""
         all260s = self.record.get_fields('260')
 
-        s1_re = re.compile(r"S.l.")
-        sn_re = re.compile(r"s.n.")
+        sl_re = re.compile(r"S.l.")
+        sn_re = re.compile(r"s\.n\.")
 
         for field in all260s:
             for subfield in field:
                 new_subfield = (
                     subfield[0],
-                    s1_re.sub(
+                    sl_re.sub(
                         "Place of publication not identified",
                         subfield[1]))
                 field.delete_subfield(subfield[0])
                 field.add_subfield(new_subfield[0], new_subfield[1])
 
+        for field in all260s:
+            for subfield in field:
+                new_subfield = (
+                    subfield[0],
+                    sn_re.sub(
+                        "publisher not identified",
+                        subfield[1]))
+                field.delete_subfield(subfield[0])
+                field.add_subfield(new_subfield[0], new_subfield[1])
+
+                
     def convert300(self):
         """Method converts abbreviations in field 300 to the expanded form"""
         all300s = self.record.get_fields('300')
@@ -124,19 +135,32 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
 
         field245.delete_subfield('h')
 
-    def convert500(self):
-        """Method to convert field 500 - expanding abbreviations"""
-        all500s = self.record.get_fields('500', '501')
-        """put commas and add all the 500 fields"""
+    def convert500s(self):
+        """Method to convert all field notes 500 - expanding abbreviations"""
+        all500s = self.record.get_fields('500', '501','502','504')
+        """There might be other 5XX fields with these abbreviations"""
 
-        page_re = re.compile(r"p.")
         intro_re = re.compile(r"introd.")
 
-        
+        for field in all500s:
+            for subfield in field:
+                new_subfield = (
+                    subfield[0],
+                    PCCMARCtoRDAConversion.pages_re.sub(
+                        "pages",
+                        subfield[1]))
+                field.delete_subfield(subfield[0])
+                field.add_subfield(new_subfield[0], new_subfield[1])
 
-
-
-
+        for field in all500s:
+            for subfield in field:
+                new_subfield = (
+                    subfield[0],
+                    intro_re.sub(
+                        "Introduction",
+                        subfield[1]))
+                field.delete_subfield(subfield[0])
+                field.add_subfield(new_subfield[0], new_subfield[1])
 
 
 def main():
