@@ -16,6 +16,57 @@ import base_converter
 import pymarc
 import re
 
+RDA_CARRIER_TYPES = {
+    'c': { # 007 - Electronic Resource
+        'k': {
+            'term': 'computer card',
+            'code': 'ck'},
+        'b': {
+            'term': 'computer chip cartridge',
+            'code': 'cb'},
+        'z': {
+            'term': 'other',
+            'code': 'cz'},
+        'd': {'term': 'computer disc', 'code': 'cd'},
+        'e': {'term': 'computer disc cartridge', 'code': 'ce'},
+        'a': {'term': 'computer tape cartridge', 'code': 'ca'},
+        'f': {'term': 'computer tape cassette', 'code': 'cf'},
+        'r': {'term': 'online resource', 'code': 'cr'},
+        'h': {'term': 'computer tape reel', 'code': 'ch'}},
+    's': { # 007 - Sound Recording
+        't': {'term': 'audiotape reel', 'code': 'st'}, 'g': {'term': 'audio cartridge', 'code': 'sg'}, 'q': {'term': 'audio roll', 'code': 'sq'}, 'z': {'term': 'other', 'code': 'sz'}, 'e': {'term': 'audio cylinder', 'code': 'se'}, 'd': {'term': 'audio disc', 'code': 'sd'}, 's': {'term': 'audiocassette', 'code': 'ss'}, 'i': {'term': 'sound track reel', 'code': 'si'}}}
+
+RDA_CONTENT_LOOKUP = {
+    'c': {
+        'term': 'tactile notated music',
+        'code': 'tcm'},
+    'f': {
+        'term': 'cartographic three-dimensional form',
+        'code': 'crf'},
+    'j': {
+        'term': 'performed music',
+        'code': 'prm'},
+    'p': {
+        'term': 'other',
+        'code': 'xxx'},
+    'a': {
+        'term': 'text',
+        'code': 'txt'}, 'm': {'term': 'computer program ', 'code': 'cop'}, 'k': {'term': 'tactile image ', 'code': 'tci'}, 't': {'term': 'text ', 'code': 'txt'}, 'g': {'term': 'two-dimensional moving image ', 'code': 'tdi'}, 'e': {'term': 'cartographic three-dimensional form ', 'code': 'crf'}, 'd': {'term': 'tactile notated music ', 'code': 'tcm'}, 'r': {'term': 'three-dimensional form ', 'code': 'tdf'}, 'o': {'term': 'other ', 'code': 'xxx'}, 'i': {'term': 'spoken word ', 'code': 'spw'}}
+
+RDA_MEDIA = {
+    'c': {
+        'term': 'computer',
+        'code': 'c'},
+    't': {
+        'term': 'unmediated',
+        'code': 'n'},
+    'g': {
+        'term': 'projected',
+        'code': 'g'},
+    'v': {
+        'term': 'video',
+        'code': 'v'},
+    'k': {'term': 'unmediated', 'code': 'n'}, 'h': {'term': 'microform', 'code': 'h'}, 'm': {'term': 'projected', 'code': 'g'}, 'z': {'term': 'other', 'code': 'x'}, 's': {'term': 'audio', 'code': 's'}}
 
 class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
     """Placeholder for class summary
@@ -79,7 +130,7 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
                 field.delete_subfield(subfield[0])
                 field.add_subfield(new_subfield[0], new_subfield[1])
 
-                
+
     def convert300(self):
         """Method converts abbreviations in field 300 to the expanded form"""
         all300s = self.record.get_fields('300')
@@ -135,6 +186,9 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
 
         field245.delete_subfield('h')
 
+    def create336(self, leader):
+        pass
+
     def convert500s(self):
         """Method to convert all field notes 500 - expanding abbreviations"""
         all500s = self.record.get_fields('500', '501','502','504')
@@ -168,3 +222,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
