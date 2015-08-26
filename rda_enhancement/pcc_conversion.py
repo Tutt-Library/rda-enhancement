@@ -11,7 +11,7 @@
 # Licence:     MIT
 #------------------------------------------------------------------------------"""
 
-import base_converter
+from . import base_converter
 
 import pymarc
 import re
