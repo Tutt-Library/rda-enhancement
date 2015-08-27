@@ -11,7 +11,10 @@
 # Licence:     MIT
 #------------------------------------------------------------------------------"""
 
-from . import base_converter
+try:
+    import base_converter
+except ImportError:
+    from . import base_converter
 
 import pymarc
 import re
@@ -90,7 +93,12 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
         """Method runs entire PCC recomended
          RDA conversions on its MARC21 record"""
         self.convert245()
-
+        self.convert260()
+        self.convert300()
+        self.create336()
+        self.create337()
+        self.create338()
+        self.convert500s()
 
     def convert245(self):
         """Method converts field 245"""
@@ -186,8 +194,54 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
 
         field245.delete_subfield('h')
 
-    def create336(self, leader):
-        pass
+    def create336(self):
+        # If 336 already exists return
+        field336 = self.record.get_fields('336')
+        if len(field336) > 0:
+            return
+        type_of = self.record.leader[6]
+        if type_of in RDA_CONTENT_LOOKUP:
+            rda_content_type = RDA_CONTENT_LOOKUP.get(type_of)
+            new336 = pymarc.Field(
+                '336', 
+                indicators=[' ',' '],
+                subfields=['a', rda_content_type.get('term'),
+                           'b', rda_content_type.get('code')])
+            self.record.add_field(new336)
+
+    def create337(self):
+        # If 337 already exists return
+        field337 = self.record.get_fields('337')
+        if len(field337) > 0 or not '007' in self.record:
+            return
+        field007 = self.record['007']
+        type_of = field007.data[0]
+         
+        if type_of in RDA_MEDIA:
+            rda_media = RDA_MEDIA.get(type_of)
+            new337 = pymarc.Field(
+                '337', 
+                indicators=[' ',' '],
+                subfields=['a', rda_media.get('term'),
+                           'b', rda_media.get('code')])
+            self.record.add_field(new337)
+
+    def create338(self):
+        # If 338 already exists return
+        field338 = self.record.get_fields('338')
+        if len(field338) > 0 or not '007' in self.record:
+            return
+        field007 = self.record['007']
+        type_of = field007.data[1]
+        if type_of in RDA_CARRIER_TYPES:
+            rda_carrier_type = RDA_CARRIER_TYPES.get(type_of)
+            new338 = pymarc.Field(
+                '338', 
+                indicators=[' ',' '],
+                subfields=['a', rda_media.get('term'),
+                           'b', rda_media.get('code')])
+            self.record.add_field(new338)
+
 
     def convert500s(self):
         """Method to convert all field notes 500 - expanding abbreviations"""
