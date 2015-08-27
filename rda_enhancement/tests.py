@@ -2,13 +2,13 @@
 # Name:        tests
 # Purpose:     Unit tests for RDA Enhancement Project
 #
-# Author:      Jeremy Nelson, Anjali Ravunniarath
+# Author:      Jeremy Nelson, Anjali Ravunniarath, Jason Stewart
 #
 # Created:     2014/09/15/
 # Copyright:   (c) Jeremy Nelson, Colorado College 2014
 # Licence:     MIT
 #----------------------------------------------------------------------------"""
-__author__ = "Jeremy Nelson, Anjali Ravunniarath"
+__author__ = "Jeremy Nelson, Anjali Ravunniarath, Jason Stewart"
 
 import copy
 import pymarc
@@ -71,22 +71,22 @@ class PCCMARCtoRDAConversionTests(unittest.TestCase):
             "=245  10$aASP.NET Web API 2 Recipes :$bA Problem Solution Approach /$cby Filip Wojcieszyn.",
             str(self.record_1['245']))
 
-    def test_convert260(self):
+    def test_convert264(self):
         record = pymarc.Record()
         record.add_field(
-            pymarc.Field('260', ['',''], ['a', '[S.l. :']))
+            pymarc.Field('264', ['',''], ['a', '[S.l. :']))
         converter = PCCMARCtoRDAConversion(record)
-        converter.convert260()
-        self.assertEqual(str(converter.record['260']['a']),
+        converter.convert264()
+        self.assertEqual(str(converter.record['264']['a']),
             "[Place of publication not identified :")
 
-    def test_convert260_b(self):
+    def test_convert264_b(self):
         record = pymarc.Record()
         record.add_field(
-            pymarc.Field('260', ['', ''], ['b', 's.n.,']))
+            pymarc.Field('264', ['', ''], ['b', 's.n.,']))
         converter = PCCMARCtoRDAConversion(record)
-        converter.convert260()
-        self.assertEqual(str(converter.record['260']['b']),
+        converter.convert264()
+        self.assertEqual(str(converter.record['264']['b']),
             "publisher not identified," )
 
 

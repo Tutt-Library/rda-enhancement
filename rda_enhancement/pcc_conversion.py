@@ -4,7 +4,7 @@
 #              February 25, 2013 recommendations for converting MARC21 records
 #              to hybrid RDA records.
 #
-# Author:      Jeremy Nelson, Anjali Ravunniarath
+# Author:      Jeremy Nelson, Anjali Ravunniarath, Jason Stewart
 #
 # Created:     2014/15/09
 # Copyright:   (c) Jeremy Nelson, Colorado College 2014
@@ -93,7 +93,7 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
         """Method runs entire PCC recomended
          RDA conversions on its MARC21 record"""
         self.convert245()
-        self.convert260()
+        self.convert264()
         self.convert300()
         self.create336()
         self.create337()
@@ -110,15 +110,17 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
             self.record.remove_field(field245)
             self.record.add_field(new_field245)
 
-    def convert260(self):
+    def convert264(self):
         """Method converts field 260. Changes s.1 to
         place of publication not identified"""
-        all260s = self.record.get_fields('260')
+        all264s = self.record.get_fields('264')
 
         sl_re = re.compile(r"S.l.")
         sn_re = re.compile(r"s\.n\.")
 
-        for field in all260s:
+        for field in all264s:
+            if len(field.indicators[1].strip()) < 1:
+                field.indicators[1] = '1'
             for subfield in field:
                 new_subfield = (
                     subfield[0],
@@ -128,7 +130,7 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
                 field.delete_subfield(subfield[0])
                 field.add_subfield(new_subfield[0], new_subfield[1])
 
-        for field in all260s:
+        for field in all264s:
             for subfield in field:
                 new_subfield = (
                     subfield[0],
@@ -206,7 +208,8 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
                 '336', 
                 indicators=[' ',' '],
                 subfields=['a', rda_content_type.get('term'),
-                           'b', rda_content_type.get('code')])
+                           'b', rda_content_type.get('code'),
+                           '2', "rdacontent"])
             self.record.add_field(new336)
 
     def create337(self):
@@ -223,7 +226,8 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
                 '337', 
                 indicators=[' ',' '],
                 subfields=['a', rda_media.get('term'),
-                           'b', rda_media.get('code')])
+                           'b', rda_media.get('code'),
+                           '2', "rdamedia"])
             self.record.add_field(new337)
 
     def create338(self):
@@ -239,7 +243,8 @@ class PCCMARCtoRDAConversion(base_converter.BaseMARC21Conversion):
                 '338', 
                 indicators=[' ',' '],
                 subfields=['a', rda_media.get('term'),
-                           'b', rda_media.get('code')])
+                           'b', rda_media.get('code'),
+                           '2', "rdacarrier"])
             self.record.add_field(new338)
 
 
